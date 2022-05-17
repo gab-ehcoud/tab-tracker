@@ -1,13 +1,13 @@
 const Joi = require('joi');
 
 module.exports = {
-    async register (req, res, next) {
-        const schema = {
-            email: Joi.string().email(),
-            password: Joi.string().regex(/^[a-zA-Z0-9]{8,32}$/)
-        }
+    register (req, res, next) {
+        const schema = Joi.object({
+            email: Joi.string().email() ,
+            password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{8,32}$')) 
+        });
 
-        const {error, value} = Joi.validate(req.body, schema);
+        const {error} = schema.validate(req.body);
         if (error) {
             switch (error.details[0].context.key) {
                 case 'email':
@@ -36,7 +36,5 @@ module.exports = {
         } else {
             next();
         }
-        
-        next();
-    }
+        }
 }
